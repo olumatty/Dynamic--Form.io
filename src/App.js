@@ -9,23 +9,56 @@ function App() {
     gender: "",
   });
 
+  const [prompts, setPrompts] = useState([
+    {
+      prompt: "",
+      answer: "",
+      timestamp: new Date().getTime(),
+    },
+  ]); 
+
   const handleInput = (e) => {
     const { name, value } = e.target;
     setUserInfo({ ...userInfo, [name]: value });
   };
 
+  console.log(userInfo)
+
+  const handlePrompt = (e, i) => {
+    const {name, value } = e.target;
+    let newPrompts = [...prompts];
+    newPrompts[i][name] = value;
+    setPrompts(newPrompts);
+  }
+
+  const handleAddPrompt = (e) => {
+    e.preventDefault();
+    setPrompts([
+      ...prompts,
+      {
+        prompt: "",
+        answer: "",
+        timestamp: new Date().getTime(),
+      },
+    ])}
+
+    const handleDelete = (i) =>{
+      let deletePrompt = [...prompts];
+      deletePrompt.splice(i ,1)
+      setPrompts(deletePrompt)
+  }
+
   return (
     <div className="App">
       <h1 className="text-3xl text-center my-4 py-2"> React Form</h1>
-      <form className="w-5/6 max-w-xl mx-auto py-4">
+      <form className="w-5/6 max-w-xl mx-auto pt-4 py-10">
         <fieldset className="flex flex-col gap-2 border py-1 px-4">
           <legend className="text-2xl font-semibold mb-2 text-gray-500">
-            {" "}
-            About You{" "}
+            About You
           </legend>
           <div>
             <label
-              for="firstName,lastName"
+              htmlFor="firstName,lastName"
               className="text-3xl font-semibold mb-2 "
             >
               What's your name
@@ -50,7 +83,7 @@ function App() {
 
           <div>
             <label htmlFor="email" className="text-3xl font-semibold">
-              What's your email?{" "}
+              What's your email?  
             </label>
             <input
               id="email"
@@ -64,7 +97,6 @@ function App() {
 
           <div>
             <label htmlFor="dob" className="text-3xl font-semibold">
-              {" "}
               What's your date of birth?
             </label>
             <input
@@ -76,8 +108,10 @@ function App() {
               className=" w-3/5 border rounded text-lg leading-tight py-3 px-2 mb-4 focus:outline-purple-200"
             />
           </div>
-          <div htmlFor="gender" className="flex flex-col">
-            <label className="text-3xl font-semibold"> Whats your Gender</label>
+          <div className="flex flex-col">
+            <label htmlFor="gender" className="text-3xl font-semibold">
+              Whats your Gender
+            </label>
             <select
               id="gender"
               name="gender"
@@ -94,35 +128,66 @@ function App() {
           <legend className="text-2xl font-semibold mb-2 text-gray-500">
             Prompts
           </legend>
-          <div className="flex flex-col">
-            <label
-              className="text-3xl font-semibold"
-              id="prompt1"
-              name="prompt1"
-            >
-              Select a prompt
-            </label>
-            <select className="w-3/5 border rounded text-lg leading-tight py-3 px-2 mb-4 focus:outline-purple-200">
-              <option value="Dating me is like...."> 
-                Dating me is like .....
-              </option>
-              <option value ="Fact about me that suprises people: "> Fact about me that suprises people:  </option>
-              <option value ="I want some who ...."> I want some who ....</option>
-              <option value = " I spend most of my money on:">  I spend most of my money on:</option>
-              <option value = " The most spontaneous thing I've done:">  The most spontaneous thing I've done:</option>
-              <option value = " We are the same kind of wierd if ...:">  We are the same kind of wierd if ...</option>
+
+          {prompts.map((prompt, i) => (
+            <div key={prompt.timestamp} className="flex flex-col ">
+              <label className="text-3xl font-semibold" htmlFor={`prompt-${i}`}>
+                Select a prompt
+              </label>
+              <div className="flex flex-row items-center gap-2">
+              <select
+                id={`prompt-${i}`}
+                name="prompt1"
+                onChange={(e) => handlePrompt(e, i)}
+                className="w-full border rounded text-lg leading-tight py-3 px-2 mt-4 mb-4 focus:outline-purple-200"
+              >
+                <option>Select Prompt </option>
+                <option value="Dating me is like....">
+                  Dating me is like .....
+                </option>
+                <option value="Fact about me that suprises people: ">
+                  Fact about me that suprises people:
+                </option>
+                <option value="I want someone who ....">
+                  I want some who ....
+                </option>
+                <option value=" I spend most of my money on:">
+                  I spend most of my money on:
+                </option>
+                <option value=" The most spontaneous thing I've done:">
+                  The most spontaneous thing I've done:
+                </option>
+                <option value=" We are the same kind of wierd if ...:">
+                  We are the same kind of wierd if ...
+                </option>
+              </select>
+              <button className="border bg-purple-400 py-2 px-4 rounded-lg text-white font-bold text-xl" type="button" onClick={() => handleDelete(i)}>
+                -
+              </button>
+              </div>
               <textarea
+                className="border border-dashed py-3 px-2 focus:outline-purple-200"
                 rows={5}
-                id="answer 1"
-                name ="answer1"
+                id={`answer-${i}`}
+                name="answer1"
                 placeholder="Let your true color shine through you"
+                onChange={(e) => handlePrompt(e, i)}
               />
-            </select>
+            </div>
+          ) )}
+
+          <div className="w-full flex justify-center">
+            <button
+            type="button"
+              className="border bg-purple-500 py-1 px-2 rounded-lg text-white font-bold text-xl"
+              onClick={handleAddPrompt}
+            >
+              Add Prompt
+            </button>
           </div>
         </fieldset>
       </form>
     </div>
-  );
+  )
 }
-
 export default App;
